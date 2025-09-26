@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Duplicate User Form Check</title>
+  <style>
+      body { font-family: Arial, sans-serif; margin: 20px; }
+      h1 { margin-bottom: 20px; }
+      form { margin-bottom: 20px; }
+      input, select, button {
+          margin: 5px;
+          padding: 8px;
+      }
+      table {
+          border-collapse: collapse;
+          width: 100%;
+          margin-top: 20px;
+      }
+      th, td {
+          border: 1px solid #ddd;
+          padding: 10px;
+          text-align: left;
+      }
+      th {
+          background: #f4f4f4;
+      }
+  </style>
+</head>
+<body>
+<h1>Duplicate User Form Check</h1>
+
+<form id="searchForm">
+  <input type="text" id="username" name="username" placeholder="Username" />
+  <input type="text" id="fullName" name="fullName" placeholder="Full Name" />
+  <input type="text" id="country" name="country" placeholder="Country" />
+  <button type="submit">Search</button>
+</form>
+
+<table id="resultsTable">
+  <thead>
+  <tr>
+    <th>Username</th>
+    <th>Full Name</th>
+    <th>Country</th>
+    <th>Phone</th>
+    <th>City</th>
+    <th>Zip Code</th>
+    <th>Address</th>
+  </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+  const form = document.getElementById('searchForm');
+  const tableBody = document.querySelector('#resultsTable tbody');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const body = {
+      username: document.getElementById('username').value,
+      full_name: document.getElementById('fullName').value,
+      country: document.getElementById('country').value,
+      page: 1,
+      size: 20,
+    };
+
+    const res = await fetch(`/users/match`, {
+      method: 'POST', body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+    });
+    const data = await res.json();
+
+    // Clear previous results
+    tableBody.innerHTML = '';
+
+    // Populate new results
+    data.forEach(user => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+          <td>${user.users_username}</td>
+          <td>${user.users_full_name || ''}</td>
+          <td>${user.users_country}</td>
+          <td>${user.users_phone_number || ''}</td>
+          <td>${user.users_city}</td>
+          <td>${user.users_zip_code}</td>
+          <td>${user.users_address_line}</td>
+        `;
+      tableBody.appendChild(row);
+    });
+  });
+</script>
+</body>
+</html>

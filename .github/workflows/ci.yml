@@ -1,0 +1,23 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    branches: [main, develop, release/*]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  setups:
+    uses: ./.github/workflows/setup-packages-job.yml
+
+  quality-check:
+    needs: [setups]
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    uses: ./.github/workflows/quality-check-job.yml
+
+  build:
+    needs: [setups]
+    uses: ./.github/workflows/builder-job.yml

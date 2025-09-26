@@ -1,0 +1,24 @@
+name: Setup packages jobs
+
+on:
+  workflow_call:
+
+jobs:
+  setups:
+    name: setup-packages
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ vars.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Setup packages
+        run: pnpm install --frozen-lockfile
+
+#      - name: Audit the package
+#        run: pnpm audit --audit-level=critical
