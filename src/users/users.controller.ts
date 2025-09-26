@@ -44,14 +44,19 @@ export class UsersController {
     if (input.username) {
       qb.addSelect('levenshtein(username, :username)', 'username_distance')
         .setParameter('username', input.username)
+        .orWhere(
+          '(1 - (levenshtein(username, :username)::float / length(:username))) >= 0.7',
+        )
         .addOrderBy('username_distance', 'ASC');
     }
 
     if (input.full_name) {
-      qb.addSelect(
-        'levenshtein(full_name, :full_name)',
-        'full_name_distance',
-      ).setParameter('full_name', input.full_name);
+      qb
+        // .addSelect('levenshtein(full_name, :full_name)', 'full_name_distance')
+        .orWhere(
+          '(1 - (levenshtein(full_name, :full_name)::float / length(:full_name))) >= 0.7',
+        )
+        .setParameter('full_name', input.full_name);
     }
 
     return qb.getRawMany();
