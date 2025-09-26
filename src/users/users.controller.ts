@@ -19,6 +19,9 @@ class MatchInput {
   @IsOptional()
   @IsString()
   country: string;
+  @IsOptional()
+  @IsString()
+  address_line: string;
 }
 
 @Controller('users')
@@ -57,6 +60,15 @@ export class UsersController {
           '(1 - (levenshtein(full_name, :full_name)::float / length(:full_name))) >= 0.7',
         )
         .setParameter('full_name', input.full_name);
+    }
+
+    if (input.address_line) {
+      qb
+        // .addSelect('levenshtein(full_name, :full_name)', 'full_name_distance')
+        .orWhere(
+          '(1 - (levenshtein(address_line, :address_line)::float / length(:address_line))) >= 0.5',
+        )
+        .setParameter('address_line', input.address_line);
     }
 
     return qb.getRawMany();

@@ -33,6 +33,7 @@
   <input type="text" id="username" name="username" placeholder="Username" />
   <input type="text" id="fullName" name="fullName" placeholder="Full Name" />
   <input type="text" id="country" name="country" placeholder="Country" />
+  <input type="text" id="addressLine" name="addressLine" placeholder="Address Line" />
   <button type="submit">Search</button>
 </form>
 
@@ -62,6 +63,7 @@
       username: document.getElementById('username').value,
       full_name: document.getElementById('fullName').value,
       country: document.getElementById('country').value,
+      address_line: document.getElementById('addressLine').value,
       page: 1,
       size: 20,
     };
